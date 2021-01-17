@@ -31,7 +31,7 @@ def get_data(crime=False):
         if data:
             for element in data:
                 element['City'] = city
-                element['Date'] = police.current_month
+                element['Date'] = police.current_month + '-01'
             data_all.append(data)
     return data_all
 
@@ -42,13 +42,15 @@ def data_to_df(data_list):
     return df
 
 
+def clean_df(df):
+    df = df.drop(['location', 'context', 'outcome_status', 'persistent_id', 'location_subtype', 'month'], axis=1)
+    return df
+
+
 if __name__ == "__main__":
     crimes = get_data(crime=True)
-    stopsearch = get_data()
     crimes_df = data_to_df(crimes)
-    stopsearch_df = data_to_df(stopsearch)
-
-    crimes_df.to_csv("crimes_july.csv", index=False)
-    stopsearch_df.to_csv("stopsearch_july.csv", index=False)
+    clean = clean_df(crimes_df)
+    clean.to_csv("crimes_july.csv", index=False)
 
 
