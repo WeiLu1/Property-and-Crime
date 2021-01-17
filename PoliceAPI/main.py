@@ -30,8 +30,8 @@ def get_data(crime=False):
             data = police.get_stop_search(latitude, longitude)
         if data:
             for element in data:
-                element['City'] = city
-                element['Date'] = police.current_month + '-01'
+                element['city'] = city
+                element['date'] = police.current_month + '-01'
             data_all.append(data)
     return data_all
 
@@ -44,6 +44,7 @@ def data_to_df(data_list):
 
 def clean_df(df):
     df = df.drop(['location', 'context', 'outcome_status', 'persistent_id', 'location_subtype', 'month'], axis=1)
+    df = df[['id', 'date', 'city', 'category', 'location_type']]
     return df
 
 
