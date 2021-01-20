@@ -18,16 +18,13 @@ city_latlong = {
            }
 
 
-def get_data(crime=False):
+def get_crime_data():
     police = PoliceAPI()
     data_all = []
     for city in city_latlong:
         latitude = city_latlong[city][0]
         longitude = city_latlong[city][1]
-        if crime:
-            data = police.get_crime_at_location(latitude, longitude)
-        else:
-            data = police.get_stop_search(latitude, longitude)
+        data = police.get_crime_at_location(latitude, longitude)
         if data:
             for element in data:
                 element['city'] = city
@@ -49,9 +46,23 @@ def clean_df(df):
 
 
 if __name__ == "__main__":
-    crimes = get_data(crime=True)
-    crimes_df = data_to_df(crimes)
-    clean = clean_df(crimes_df)
-    clean.to_csv("crimes_july.csv", index=False)
+
+    police = PoliceAPI()
+    police_force = 'metropolitan'
+    metropolitan_codes = police.get_neighbourhood_codes(police_force)
+    for pair in metropolitan_codes:
+        id = pair['id']
+        name = pair['name']
+        print(id, name)
+        # boundaries = police.get_neighbourhood_boundaries(police_force, id)
+        # print(boundaries[0])
+        # print()
+
+
+
+    # crimes = get_crime_data()
+    # crimes_df = data_to_df(crimes)
+    # clean = clean_df(crimes_df)
+    # clean.to_csv("crimes_july.csv", index=False)
 
 
