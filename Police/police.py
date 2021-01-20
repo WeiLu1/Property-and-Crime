@@ -1,5 +1,7 @@
 from datetime import datetime
 from utils import get_response
+from postcode import get_borough
+from utils import write_to_json
 
 
 class PoliceAPI(object):
@@ -26,5 +28,42 @@ class PoliceAPI(object):
         return response
 
 
+def match_police_code_to_borough():
+    police_force = 'metropolitan'
+
+    police_obj = PoliceAPI()
+    borough = ''
+    borough_total = []
+    metropolitan_codes = police_obj.get_neighbourhood_codes(police_force)
+    for pair in metropolitan_codes:
+        borough_dict = {}
+        id = pair['id']
+        name = pair['name']
+        boundaries = police_obj.get_neighbourhood_boundaries(police_force, id)
+
+        i = 0
+        while i < len(boundaries) - 1:
+            lat = boundaries[i]['latitude']
+            long = boundaries[i]['longitude']
+            borough = get_borough(lat, long)
+            if borough == "CAN'T FIND BOROUGH":
+                i += 1
+            else:
+                break
+
+        borough_dict['id'] = id
+        borough_dict['name'] = name
+        borough_dict['borough'] = borough
+        borough_total.append(borough_dict)
+        print(id + ', ' + name + ', ' + borough)
+    write_to_json('borough.json', borough_total)
+
+
+def get_polygon_district():
+    pass
+
+
 if __name__ == "__main__":
-    police = PoliceAPI()
+
+    match_police_code_to_borough()
+
