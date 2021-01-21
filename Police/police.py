@@ -82,7 +82,7 @@ def get_polygon_police_code(police_obj):
     write_to_json('boroughs_info.json', 'Police', borough_total)
 
 
-def get_all_info_to_file():
+def get_code_info_to_file():
     """
     Only needs to be done once.
     """
