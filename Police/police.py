@@ -93,5 +93,5 @@ def get_code_info_to_file():
 
 if __name__ == "__main__":
 
-    get_all_info_to_file()
+    get_code_info_to_file()
 
