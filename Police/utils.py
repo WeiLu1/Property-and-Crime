@@ -1,9 +1,12 @@
 import requests
 import json
+import numpy as np
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
-path_project = os.getcwd()
+load_dotenv()
+dir_path = os.getcwd() + '/' + os.getenv('DIRECTORYPATH') + '/'
 
 
 def get_response(url):
@@ -22,11 +25,23 @@ def write_to_json(file_name, data):
 
 
 def json_to_csv(json_name, csv_name):
-    json_path = path_project + '/' + json_name
-    csv_path = path_project + '/' + csv_name
+    json_path = dir_path + json_name
+    csv_path = dir_path + csv_name
     csv = pd.read_json(json_path)
     csv.to_csv(csv_path, index=False)
 
 
+def load_json(json_name):
+    json_path = dir_path + json_name
+    with open(json_path) as file:
+        data = json.load(file)
+    return data
+
+
+def get_linear_spaced_indexes(length, spacing):
+    indexes = np.round(np.linspace(0, length - 1, spacing)).astype(int)
+    return indexes
+
+
 if __name__ == "__main__":
-    json_to_csv('borough.json', 'borough.csv')
+    json_to_csv('boroughs_info.json', 'boroughs_info.csv')
