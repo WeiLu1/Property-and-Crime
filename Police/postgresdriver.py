@@ -1,12 +1,20 @@
 import psycopg2
 from queries import create_crimes_table
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+database = os.getenv('POSTGRES_DATABASE')
+user = os.getenv('POSTGRES_USER')
+host = os.getenv('POSTGRES_HOST')
+port = os.getenv('POSTGRES_PORT')
 
 
 class PostgresDriver(object):
 
     def __init__(self):
         try:
-            self.conn = psycopg2.connect(database="propertycrime", user="postgres", host="127.0.0.1", port="5432")
+            self.conn = psycopg2.connect(database=database, user=user, host=host, port=port)
             self.cursor = self.conn.cursor()
         except Exception as e:
             print('NO CONNECTION')
