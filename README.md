@@ -1,6 +1,6 @@
-#Data engineering project
+# Data engineering project
 
-###Background
+### Background
 Showing if there is a correlation between house prices of an area 
 and its crime-rate. 
 
