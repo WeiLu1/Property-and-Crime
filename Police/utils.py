@@ -3,10 +3,8 @@ import json
 import numpy as np
 import pandas as pd
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-dir_path = os.getcwd() + '/' + os.getenv('DIRECTORYPATH') + '/'
+dir_path = os.getcwd() + '/'
 
 
 def get_response(url):
