@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS crimes (
 """
 
 insert_crime = """
-INSERT INTO crimes (id, date, borough, category) VALUES ({},{},{},{})
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO crimes (id, date, category, borough) VALUES (
+    %(id)s,
+    %(date)s,
+    %(category)s,
+    %(borough)s
+) ON CONFLICT (id) DO NOTHING;
+"""
+
+create_crimes_index = """
+CREATE INDEX borough_index ON crimes (borough);
 """
