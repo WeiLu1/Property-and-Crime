@@ -3,7 +3,8 @@ from utils import (
     get_response,
     write_to_json,
     load_json,
-    get_linear_spaced_indexes
+    get_linear_spaced_indexes,
+    get_last_month
 )
 from postcode import get_borough
 
@@ -14,11 +15,11 @@ class PoliceAPI(object):
         self.base_url = 'https://data.police.uk/api/'
         self.today = datetime.today()
         self.current_month = str(datetime(self.today.year, self.today.month, 1))[:7]
+        self.last_month = get_last_month()
         self.police_force = 'metropolitan'
 
     def get_crimes_custom_area(self, polygon):
-        # url = self.base_url + 'crimes-street/all-crime?poly=' + polygon + '&date=' + self.current_month
-        url = self.base_url + 'crimes-street/all-crime?poly=' + polygon + '&date=' + '2020-01'
+        url = self.base_url + 'crimes-street/all-crime?poly=' + polygon + '&date=' + self.last_month
         response = get_response(url)
         return response
 
@@ -79,7 +80,7 @@ def get_polygon_police_code(police_obj):
         borough_dict['borough'] = area['borough']
         borough_dict['polygon'] = poly_string[:-1]
         borough_total.append(borough_dict)
-    write_to_json('boroughs_info.json', 'Police', borough_total)
+    write_to_json('boroughs_info.json', borough_total)
 
 
 def get_code_info_to_file():
@@ -94,4 +95,3 @@ def get_code_info_to_file():
 if __name__ == "__main__":
 
     get_code_info_to_file()
-
