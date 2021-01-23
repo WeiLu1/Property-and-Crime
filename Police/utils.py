@@ -3,6 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 import os
+from datetime import datetime, timedelta
 
 dir_path = os.getcwd() + '/'
 
@@ -41,5 +42,12 @@ def get_linear_spaced_indexes(length, spacing):
     return indexes
 
 
+def get_last_month():
+    today = datetime.today()
+    first = today.replace(day=1)
+    last_month = first - timedelta(days=1)
+    return last_month.strftime("%Y-%m")
+
+
 if __name__ == "__main__":
-    json_to_csv('boroughs_info.json', 'boroughs_info.csv')
+    get_last_month()
