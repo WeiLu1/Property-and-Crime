@@ -1,35 +1,27 @@
-import pandas as pd
 from police import PoliceAPI
 from utils import load_json
+from postgresdriver import Postgres
+from datetime import datetime
 
 
-def get_crimes():
+def insert_crimes_to_db():
     police = PoliceAPI()
     districts = load_json('boroughs_info.json')
-    all_crimes = []
+    db = Postgres()
 
     for district in districts:
         borough = district['borough']
         polygon = district['polygon']
         crimes = police.get_crimes_custom_area(polygon)
         if crimes:
+            database_insert = []
             for crime in crimes:
-                crime['borough'] = borough
-            all_crimes.append(crimes)
-    return all_crimes
-
-
-# def data_to_df(data_list):
-#     flat_list_crimes = [dictionary for listarr in data_list for dictionary in listarr]
-#     df = pd.DataFrame(flat_list_crimes)
-#     return df
-#
-#
-# def clean_df(df):
-#     df = df.drop(['location', 'context', 'outcome_status', 'persistent_id', 'location_subtype'], axis=1)
-#     df = df[['id', 'month', 'borough', 'category', 'location_type']]
-#     return df
+                crime_insert = {'id': crime['id'], 'date': crime['month'] + '-01', 'category': crime['category'], 'borough': borough}
+                database_insert.append(crime_insert)
+            db.batch_insert(database_insert)
+            print("batch inserted at: ", datetime.now())
+    db.disconnect()
 
 
 if __name__ == "__main__":
-    get_crimes()
+    insert_crimes_to_db()
