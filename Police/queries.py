@@ -19,3 +19,13 @@ INSERT INTO crimes (id, date, category, borough) VALUES (
 create_crimes_index = """
 CREATE INDEX borough_index ON crimes (borough);
 """
+
+create_propertiesraw_table = """
+CREATE TABLE propertiesraw (
+description VARCHAR(150) NOT NULL,
+price INTEGER NOT NULL,
+url VARCHAR(150) NOT NULL PRIMARY KEY,
+numberbeds INTEGER NOT NULL,
+borough VARCHAR(30) NOT NULL
+);
+"""
