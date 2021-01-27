@@ -1,41 +1,42 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
-"""
-TO DO: put this up onto aws cluster
-"""
 
-property_schema = StructType(
-   [
-    StructField("borough", StringType(), True),
-    StructField("numberbeds", IntegerType(), True),
-    StructField("price", IntegerType(), True),
-    StructField("url", StringType(), True)
-   ]
-)
+def processor(spark, input_data, output_data):
 
+    property_schema = StructType(
+        [
+            StructField("borough", StringType(), True),
+            StructField("numberbeds", IntegerType(), True),
+            StructField("price", IntegerType(), True),
+            StructField("url", StringType(), True)
+        ]
+    )
 
-spark = SparkSession.Builder()\
-   .appName("PropertyAnalyse")\
-   .getOrCreate()
+    property_df = spark.read.format("csv").schema(property_schema).option("header", "false").load(input_data)
 
+    average_price = property_df.groupBy("borough", 'numberbeds').avg("price").orderBy('borough', 'numberbeds', ascending=True)
 
-property_df = spark\
-   .read\
-   .format("csv")\
-   .schema(property_schema)\
-   .option("header", "false")\
-   .load("/Users/weilu/Scraper/*.csv")
+    # print(average_price.show(10))
+
+    average_price.toPandas().to_csv(output_data, header=True, line_terminator='\n')
 
 
-average_price = property_df.groupBy("borough").avg("price")
+def create_spark_session():
+    spark = SparkSession.Builder() \
+        .appName("PropertyAnalyse") \
+        .getOrCreate()
+    return spark
 
 
-print(average_price.show(50))
+def main():
+    ss = create_spark_session()
+    input_data = 's3n://property-prices-borough/input/data/*.csv'
+    output_data = 's3n://property-prices-borough/output/results.csv'
+
+    processor(ss, input_data, output_data)
 
 
-
-
-
-
+if __name__ == "__main__":
+    main()
 
