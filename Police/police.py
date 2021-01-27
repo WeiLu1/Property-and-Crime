@@ -40,10 +40,7 @@ def match_police_code_borough(police_obj):
 
     metropolitan_codes = police_obj.get_neighbourhood_codes()
     for pair in metropolitan_codes:
-        borough_dict = {}
-        id = pair['id']
-        name = pair['name']
-        boundaries = police_obj.get_neighbourhood_boundaries(id)
+        boundaries = police_obj.get_neighbourhood_boundaries(pair['id'])
 
         i = 0
         while i < len(boundaries) - 1:
@@ -55,11 +52,8 @@ def match_police_code_borough(police_obj):
             else:
                 break
 
-        borough_dict['id'] = id
-        borough_dict['name'] = name
-        borough_dict['borough'] = borough
-        borough_total.append(borough_dict)
-        print(id + ', ' + name + ', ' + borough)
+        borough_total.append({'id': pair['id'], 'name': pair['name'], 'borough': borough})
+        print(pair['id'] + ', ' + pair['name'] + ', ' + borough)
     write_to_json('borough.json', 'Police', borough_total)
 
 
@@ -68,18 +62,13 @@ def get_polygon_police_code(police_obj):
 
     data = load_json('borough.json')
     for area in data:
-        borough_dict = {}
         poly_string = ''
         boundaries = police_obj.get_neighbourhood_boundaries(area['id'])
         indexes = get_linear_spaced_indexes(length=len(boundaries), spacing=100)
         for index in indexes:
             poly_string += str(boundaries[index]['latitude']) + ',' + str(boundaries[index]['longitude']) + ':'
         print(poly_string[:-1])
-        borough_dict['id'] = area['id']
-        borough_dict['name'] = area['name']
-        borough_dict['borough'] = area['borough']
-        borough_dict['polygon'] = poly_string[:-1]
-        borough_total.append(borough_dict)
+        borough_total.append({'id': area['id'], 'name': area['name'], 'borough': area['borough'], 'polygon': poly_string[:-1]})
     write_to_json('boroughs_info.json', borough_total)
 
 
