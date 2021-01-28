@@ -19,7 +19,7 @@ def processor(spark, input_data, output_data):
 
     # print(average_price.show(10))
 
-    average_price.toPandas().to_csv(output_data, header=True, line_terminator='\n')
+    average_price.repartition(1).write.option("header", "true").csv(output_data)
 
 
 def create_spark_session():
@@ -32,7 +32,7 @@ def create_spark_session():
 def main():
     ss = create_spark_session()
     input_data = 's3n://property-prices-borough/input/data/*.csv'
-    output_data = 's3n://property-prices-borough/output/results.csv'
+    output_data = 's3n://property-prices-borough/output/data/'
 
     processor(ss, input_data, output_data)
 
