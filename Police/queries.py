@@ -28,3 +28,11 @@ price INTEGER NOT NULL,
 url VARCHAR(150) NOT NULL PRIMARY KEY
 );
 """
+
+create_properties_av_table = """
+CREATE TABLE propertiesaverage (
+borough VARCHAR(30) NOT NULL, 
+numberbeds INTEGER NOT NULL,
+price NUMERIC(10, 2) NOT NULL
+);
+"""
