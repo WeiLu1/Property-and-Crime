@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block content %}
+    <title>Home</title>
+
+    <div>
+        <h1>Property and Crime of London Boroughs</h1>
+    </div>
+
+    <form class="form-inline" role="form" method="POST">
+        <div class="form-group">
+        <label for="exampleFormControlSelect1"></label>
+        <select name="dropdown" class="form-control" id="exampleFormControlSelect1">
+<!--         <option selected disabled>Select</option>-->
+         <option></option>
+          <option>Barking and Dagenham</option>
+          <option>Barnet</option>
+          <option>Bexley</option>
+          <option>Brent</option>
+          <option>Bromley</option>
+          <option>Camden</option>
+          <option>City of London</option>
+          <option>Croydon</option>
+          <option>Ealing</option>
+          <option>Enfield</option>
+          <option>Greenwich</option>
+          <option>Hackney</option>
+          <option>Hammersmith and Fulham</option>
+          <option>Haringey</option>
+          <option>Harrow</option>
+          <option>Havering</option>
+          <option>Hillingdon</option>
+          <option>Hounslow</option>
+          <option>Islington</option>
+          <option>Kensington and Chelsea</option>
+          <option>Kingston upon Thames</option>
+          <option>Lambeth</option>
+          <option>Lewisham</option>
+          <option>Merton</option>
+          <option>Newham</option>
+          <option>Redbridge</option>
+          <option>Richmond upon Thames</option>
+          <option>Southwark</option>
+          <option>Sutton</option>
+          <option>Tower Hamlets</option>
+          <option>Waltham Forest</option>
+          <option>Wandsworth</option>
+          <option>Westminster</option>
+        </select>
+        </div>
+       <button style="margin:10px;" type="submit" class="btn btn-primary">Find</button>
+    </form>
+
+ {% if borough %}
+
+    <h3 style="padding-top: 10px;">{{ borough }}</h3>
+
+    <div class="floatLeft">
+        <h5>Average Property Price</h5>
+        <table class="table" style="margin-left: 0px; width: 95%; margin-top: 0px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Number of Beds</th>
+              <th scope="col">Price (£)</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for row in properties %}
+            <tr class="table-active">
+                {% for cell in row %}
+                <td >{{ cell }}</td>
+                {% endfor %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+
+    <div class="floatRight">
+        <h5 style="margin-left:40px;">Crime Count</h5>
+        <table class="table" style="margin-left:40px; width: 95%; margin-top: 0px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Category of Crime</th>
+              <th scope="col">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+           {% for row in crimes %}
+            <tr class="table-active">
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
