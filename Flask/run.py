@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, url_for
 import psycopg2
-import pandas as pd
 import plotly.express as px
 import plotly.utils
 import json
@@ -80,16 +79,22 @@ def compare():
     if request.method == 'GET':
         crime, properties = db_data(all=True)
 
-        properties_df = pd.DataFrame([[j for j in i] for i in properties])
-        properties_df.rename(columns={0: 'Borough', 1: 'Number of beds', 2: 'Average price (£)'}, inplace=True)
-
-        crime_df = pd.DataFrame([[j for j in i] for i in crime])
-        crime_df.rename(columns={0: 'Borough', 1: 'Crime', 2: 'Count'}, inplace=True)
-
-        line_property = px.line(properties_df, x="Number of beds", y="Average price (£)", color='Borough')
+        line_property = px.line(properties, x=[x[1] for x in properties], y=[x[2] for x in properties], color=[x[0] for x in properties])
         line_property = line_property.update_traces(mode='markers+lines')
+        line_property.update_traces(hovertemplate='Number of bedrooms: %{x} <br>Average price (£): %{y}')
+        line_property.update_layout(
+            xaxis_title="Number of bedrooms",
+            yaxis_title="Average price (£)",
+            legend_title="Borough"
+        )
 
-        bar_crime = px.bar(crime_df, x="Crime", y="Count", color='Borough')
+        bar_crime = px.bar(crime, x=[x[1] for x in crime], y=[x[2] for x in crime], color=[x[0] for x in crime])
+        bar_crime.update_traces(hovertemplate='Crime category: %{x} <br>Count: %{y}')
+        bar_crime.update_layout(
+            xaxis_title="Crime Category",
+            yaxis_title="Count",
+            legend_title="Borough"
+        )
 
         return render_template("compare.html", plot1=create_chart(line_property), plot2=create_chart(bar_crime))
     else:
