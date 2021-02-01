@@ -4,6 +4,7 @@
 
     <div>
         <h1>Property and Crime of London Boroughs</h1>
+        <p>Select a borough and press the find button to see the table data.</p>
     </div>
 
     <form class="form-inline" role="form" method="POST">
@@ -97,6 +98,35 @@
         </table>
     </div>
 
+{% else %}
+     <div class="floatLeft">
+        <h5>Average Property Price</h5>
+        <table class="table" style="margin-left: 0px; width: 95%; margin-top: 0px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Number of Beds</th>
+              <th scope="col">Price (£)</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+            </div>
+
+
+    <div class="floatRight">
+        <h5 style="margin-left:40px;">Crime Count</h5>
+        <table class="table" style="margin-left:40px; width: 95%; margin-top: 0px;">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Category of Crime</th>
+              <th scope="col">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
 {% endif %}
 
 {% endblock %}

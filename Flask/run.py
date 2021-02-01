@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, url_for
 import psycopg2
+import pandas as pd
+import plotly.express as px
+import plotly.utils
+import json
 import os
 from dotenv import load_dotenv
 
@@ -12,26 +16,47 @@ host = os.getenv('POSTGRES_HOST')
 port = os.getenv('POSTGRES_PORT')
 
 
-def dbcursor():
+crime_query = """
+SELECT category, COUNT(DISTINCT(id)) FROM crimes WHERE borough LIKE '{}' GROUP BY category ORDER BY COUNT(DISTINCT(id)) DESC;
+"""
+
+properties_query = """
+SELECT numberbeds, price FROM propertiesaverage WHERE borough LIKE '{}' ORDER BY numberbeds ASC;
+"""
+
+crime_all_query = """
+SELECT borough, category, COUNT(DISTINCT(id)) FROM crimes GROUP BY borough, category ORDER BY borough ASC, category ASC;
+"""
+
+properties_all_query = """
+SELECT borough, numberbeds, price FROM propertiesaverage ORDER BY borough ASC, numberbeds ASC;
+"""
+
+
+def db_data(borough='', properties=False, crimes=False, all=False):
     conn = psycopg2.connect(database=database, user=user, host=host, port=port)
     cursor = conn.cursor()
-    return cursor
 
+    if all:
+        cursor.execute(crime_all_query)
+        data_crime = cursor.fetchall()
+        cursor.execute(properties_all_query)
+        data_property = cursor.fetchall()
+        return data_crime, data_property
 
-def get_properties(borough):
-    db = dbcursor()
-    db.execute("select numberbeds, price from propertiesaverage where borough like '{}' order by numberbeds asc;".format(borough))
-    data = db.fetchall()
-    db.close()
+    if properties:
+        cursor.execute(properties_query.format(borough))
+    if crimes:
+        cursor.execute(crime_query.format(borough))
+
+    data = cursor.fetchall()
+    cursor.close()
     return data
 
 
-def get_crimes(borough):
-    db = dbcursor()
-    db.execute("select category, count(distinct(id)) from crimes where borough like '{}' group by category order by count(distinct(id)) desc;".format(borough))
-    data = db.fetchall()
-    db.close()
-    return data
+def create_chart(fig):
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -39,12 +64,11 @@ def get_crimes(borough):
 def hello():
     if request.method == 'POST':
         borough = request.form["dropdown"]
-        print(borough)
         if not borough:
             return render_template("home.html")
 
-        properties = get_properties(borough)
-        crimes = get_crimes(borough)
+        properties = db_data(borough=borough, properties=True)
+        crimes = db_data(borough=borough, crimes=True)
 
         return render_template("home.html", borough=borough, properties=properties, crimes=crimes)
     else:
@@ -53,7 +77,23 @@ def hello():
 
 @app.route("/compare")
 def compare():
-    return render_template("compare.html")
+    if request.method == 'GET':
+        crime, properties = db_data(all=True)
+
+        properties_df = pd.DataFrame([[j for j in i] for i in properties])
+        properties_df.rename(columns={0: 'Borough', 1: 'Number of beds', 2: 'Average price (£)'}, inplace=True)
+
+        crime_df = pd.DataFrame([[j for j in i] for i in crime])
+        crime_df.rename(columns={0: 'Borough', 1: 'Crime', 2: 'Count'}, inplace=True)
+
+        line_property = px.line(properties_df, x="Number of beds", y="Average price (£)", color='Borough')
+        line_property = line_property.update_traces(mode='markers+lines')
+
+        bar_crime = px.bar(crime_df, x="Crime", y="Count", color='Borough')
+
+        return render_template("compare.html", plot1=create_chart(line_property), plot2=create_chart(bar_crime))
+    else:
+        return render_template("compare.html")
 
 
 @app.route("/about")

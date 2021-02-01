@@ -2,6 +2,25 @@
 {% block content %}
 
     <title>Compare</title>
-    <h1> Compare Two Boroughs </h1>
+    <h1> Compare Boroughs </h1>
+    <p>Double click on a borough in the chart legend to isolate it on the graph. Double click on the same isolated borough to revert the graph. Add more boroughs by clicking on them after. </p>
+
+    <h3 style="margin-bottom: 20px">Average price by number of bedrooms</h3>
+    <div class="chart" id="line_property">
+        <script>
+        var graphs = {{plot1 | safe}};
+        Plotly.plot('line_property',graphs,{});
+        </script>
+    </div>
+
+    <h3 style="margin-bottom: 20px; margin-top: 20px">Crimes by count</h3>
+    <div style="margin-bottom: 20px" class="chart" id="bar_crime">
+        <script>
+        var graphs = {{plot2 | safe}};
+        Plotly.plot('bar_crime',graphs,{});
+        </script>
+    </div>
+
+
 
 {% endblock %}
