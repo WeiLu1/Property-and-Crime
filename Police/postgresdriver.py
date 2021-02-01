@@ -9,13 +9,14 @@ database = os.getenv('POSTGRES_DATABASE')
 user = os.getenv('POSTGRES_USER')
 host = os.getenv('POSTGRES_HOST')
 port = os.getenv('POSTGRES_PORT')
+password = os.getenv('POSTGRES_PASSWORD')
 
 
 class Postgres(object):
 
     def __init__(self):
         try:
-            self.conn = psycopg2.connect(database=database, user=user, host=host, port=port)
+            self.conn = psycopg2.connect(database=database, user=user, host=host, port=port, password=password)
             self.cursor = self.conn.cursor()
         except Exception as e:
             print('NO CONNECTION')

@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, url_for
 import psycopg2
 import plotly.express as px
 import plotly.utils
-from datetime import datetime
 import json
 import os
 from dotenv import load_dotenv
@@ -14,6 +13,7 @@ database = os.getenv('POSTGRES_DATABASE')
 user = os.getenv('POSTGRES_USER')
 host = os.getenv('POSTGRES_HOST')
 port = os.getenv('POSTGRES_PORT')
+password = os.getenv('POSTGRES_PASSWORD')
 
 
 crime_query = """
@@ -42,7 +42,7 @@ SELECT category, COUNT(DISTINCT(id)) FROM crimes WHERE borough LIKE '{}' AND dat
 
 
 def db_data(query):
-    conn = psycopg2.connect(database=database, user=user, host=host, port=port)
+    conn = psycopg2.connect(database=database, user=user, host=host, port=port, password=password)
     cursor = conn.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
