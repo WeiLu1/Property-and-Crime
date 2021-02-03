@@ -42,7 +42,7 @@ spark-submit spark_batch.py
 \
 The webapp itself is hosted on elastic beanstalk here: 
 ```url
-http://londonpropertycrimes.eu-west-2.elasticbeanstalk.com/compare
+http://londonpropertycrimes.eu-west-2.elasticbeanstalk.com/
 ```
 One difficulty that arised was needing to connect to the ec2 instance itself 
 to run this command as psycopg2 wasn't being recognised by EB: 
