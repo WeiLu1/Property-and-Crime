@@ -4,16 +4,16 @@ import plotly.express as px
 import plotly.utils
 import json
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-load_dotenv()
-database = os.getenv('POSTGRES_DATABASE')
-user = os.getenv('POSTGRES_USER')
-host = os.getenv('POSTGRES_HOST')
-port = os.getenv('POSTGRES_PORT')
-password = os.getenv('POSTGRES_PASSWORD')
+# load_dotenv()
+database = os.environ['POSTGRES_DATABASE']
+user = os.environ['POSTGRES_USER']
+host = os.environ['POSTGRES_HOST']
+port = os.environ['POSTGRES_PORT']
+password = os.environ['POSTGRES_PASSWORD']
 
 
 crime_query = """
@@ -55,8 +55,8 @@ def create_chart(fig):
     return graphJSON
 
 
-@app.route("/", methods=['GET', 'POST'])
-@app.route("/home", methods=['GET', 'POST'])
+@application.route("/", methods=['GET', 'POST'])
+@application.route("/home", methods=['GET', 'POST'])
 def hello():
     if request.method == 'POST':
         borough = request.form["dropdown"]
@@ -71,7 +71,7 @@ def hello():
         return render_template("home.html")
 
 
-@app.route("/compare", methods=['GET'])
+@application.route("/compare", methods=['GET'])
 def compare():
     if request.method == 'GET':
         crime = db_data(crime_all_query)
@@ -99,12 +99,12 @@ def compare():
         return render_template("compare.html")
 
 
-@app.route("/about")
+@application.route("/about")
 def about():
     return render_template("about.html")
 
 
-@app.route("/crimes-by-month", methods=['GET', 'POST'])
+@application.route("/crimes-by-month", methods=['GET', 'POST'])
 def crime_selector():
     dates = [x[0] for x in db_data(dates_query)]
 
@@ -121,7 +121,7 @@ def crime_selector():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    application.run(debug=True)
 
 
 
