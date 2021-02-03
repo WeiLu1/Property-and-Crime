@@ -39,3 +39,14 @@ and using the command:
 spark-submit spark_batch.py
 ```
 
+\
+The webapp itself is hosted on elastic beanstalk here: 
+```url
+http://londonpropertycrimes.eu-west-2.elasticbeanstalk.com/compare
+```
+One difficulty that arised was needing to connect to the ec2 instance itself 
+to run this command as psycopg2 wasn't being recognised by EB: 
+```
+sudo yum install postgresql-devel
+```
+
