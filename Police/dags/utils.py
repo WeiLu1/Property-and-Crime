@@ -1,7 +1,6 @@
 import requests
 import json
 import numpy as np
-import pandas as pd
 import os
 from datetime import datetime, timedelta
 
@@ -21,19 +20,17 @@ def write_to_json(file_name, data):
         json.dump(data, file)
 
 
-def json_to_csv(json_name, csv_name):
-    dir_path = os.getcwd() + '/Police/dags/'
-    json_path = dir_path + json_name
-    csv_path = dir_path + csv_name
-    csv = pd.read_json(json_path)
-    csv.to_csv(csv_path, index=False)
-
-
 def load_json(json_name):
     dir_path = os.getcwd() + '/Police/dags/'
     json_path = os.path.join(dir_path, json_name)
     print(json_path)
     with open(json_path) as file:
+        data = json.load(file)
+    return data
+
+
+def load_json_local(json_name):
+    with open(os.getcwd() + '/' + json_name) as file:
         data = json.load(file)
     return data
 
@@ -51,5 +48,4 @@ def get_last_month():
 
 
 if __name__ == "__main__":
-    load_json('boroughs_info.json')
     get_last_month()

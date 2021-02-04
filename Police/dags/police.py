@@ -3,6 +3,7 @@ from utils import (
     get_response,
     write_to_json,
     load_json,
+    load_json_local,
     get_linear_spaced_indexes,
     get_last_month
 )
@@ -54,13 +55,13 @@ def match_police_code_borough(police_obj):
 
         borough_total.append({'id': pair['id'], 'name': pair['name'], 'borough': borough})
         print(pair['id'] + ', ' + pair['name'] + ', ' + borough)
-    write_to_json('borough.json', 'Police', borough_total)
+    write_to_json('borough.json', borough_total)
 
 
 def get_polygon_police_code(police_obj):
     borough_total = []
 
-    data = load_json('borough.json')
+    data = load_json_local('borough.json')
     for area in data:
         poly_string = ''
         boundaries = police_obj.get_neighbourhood_boundaries(area['id'])
@@ -82,5 +83,4 @@ def get_code_info_to_file():
 
 
 if __name__ == "__main__":
-
     get_code_info_to_file()
