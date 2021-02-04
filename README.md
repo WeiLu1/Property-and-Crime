@@ -18,7 +18,7 @@ After this, it is possible to get crimes per borough by passing a latitude and
 longitude polygon represented as a string to the Police Crimes endpoint.
 
 
-##Architecture
+## Architecture
 
 ![Image](Pipeline.png)
 
